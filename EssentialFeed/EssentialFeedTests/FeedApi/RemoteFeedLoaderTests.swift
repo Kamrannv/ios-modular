@@ -34,7 +34,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
     func test_load_deliversErrorOnClientError() {
         let (sut, client) = makeFactorySUT()
         
-        expect(sut, toCompleteWithError: .failure(.connectivity)) {
+        expect(sut, toCompleteWith: .failure(.connectivity)) {
             let clientError = NSError(domain: "Test", code: 0)
             client.complete(with: clientError)
         }
@@ -45,7 +45,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
         let (sut, client) = makeFactorySUT()
         let statusCodes = [199, 201, 300, 400, 500]
         statusCodes.enumerated().forEach { index, code in
-            expect(sut, toCompleteWithError: .failure(.invalidData)) {
+            expect(sut, toCompleteWith: .failure(.invalidData)) {
                 let jsonData = makeItemJson([])
                 client.complete(withStatusCode: code, data: jsonData, at: index)
             }
@@ -55,7 +55,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
     func test_loadDataWith200WithInvalidJson() {
         let (sut, client) = makeFactorySUT()
         
-        expect(sut, toCompleteWithError: .failure(.invalidData), when: {
+        expect(sut, toCompleteWith: .failure(.invalidData), when: {
             let invalidJSON = Data("invalid".utf8)
             client.complete(withStatusCode: 200, data: invalidJSON)
         })
@@ -64,7 +64,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
     
     func test_load_deliversNoItemsWith200HTTPResponse() {
         let  (sut, client) = makeFactorySUT()
-        expect(sut, toCompleteWithError: .success([])) {
+        expect(sut, toCompleteWith: .success([])) {
             let emptyListJson = Data("{\"items\": []}".utf8)
             client.complete(withStatusCode: 200, data: emptyListJson)
         }
@@ -87,7 +87,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
         )
         
         let items = [item1.model, item2.model]
-        expect(sut, toCompleteWithError: .success(items), when: {
+        expect(sut, toCompleteWith: .success(items), when: {
             let json = makeItemJson([item1.json,item2.json])
             client.complete(withStatusCode: 200, data: json)
         })
@@ -123,12 +123,23 @@ final class RemoteFeedLoaderTests: XCTestCase {
         }
     }
     
-    private func expect(_ sut: RemoteFeedLoader, toCompleteWithError result: RemoteFeedLoader.Result, when action: ()->Void, file: StaticString = #filePath, line: UInt = #line){
-        var capturedResults = [RemoteFeedLoader.Result]()
-        sut.load { capturedResults.append($0) }
-        action()
+    private func expect(_ sut: RemoteFeedLoader, toCompleteWith expectedResult: RemoteFeedLoader.Result, when action: ()->Void, file: StaticString = #filePath, line: UInt = #line){
         
-        XCTAssertEqual(capturedResults, [result], file:file, line:line)
+        let exp = expectation(description: "Wait for load completion")
+        sut.load { receivedResult in
+            switch (receivedResult, expectedResult){
+            case let (.success(receivedItems), .success(expectedItems)):
+                XCTAssertEqual(receivedItems, expectedItems, file:file, line:line)
+            case let (.failure(receivedError), .failure(expectedError)):
+                XCTAssertEqual(receivedError, expectedError, file:file, line:line)
+            default:
+                XCTFail("Expected result \(expectedResult) got \(receivedResult) instead")
+            }
+            exp.fulfill()
+            
+        }
+        action()
+        wait(for: [exp], timeout: 1.0)
     }
     
     private func makeItem(id: UUID, description: String? = nil, location: String? = nil, imageURL: URL)->(model: FeedItem, json: [String: Any]) {
