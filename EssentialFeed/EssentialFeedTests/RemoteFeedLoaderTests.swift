@@ -61,15 +61,37 @@ final class RemoteFeedLoaderTests: XCTestCase {
        
     }
     
-    func test_deliversNoItemsWith200HTTPResponse() {
+    func test_load_deliversNoItemsWith200HTTPResponse() {
         let  (sut, client) = makeFactorySUT()
-        let emptyListJson = Data("{\"items\": []}".utf8)
         expect(sut, toCompleteWithError: .success([])) {
             let emptyListJson = Data("{\"items\": []}".utf8)
             client.complete(withStatusCode: 200, data: emptyListJson)
         }
     }
     
+    func test_load_deliversItemsWith200HTTPResponse() {
+        let (sut, client) = makeFactorySUT()
+        
+        let item1 = makeItem(
+            id: UUID(),
+            imageURL: URL(string: "http://a-url.com")!
+        )
+        let item2 = makeItem(
+            id: UUID(),
+            description: "desc",
+            location: "location",
+            imageURL: URL(string: "http://another-url.com")!
+
+        )
+        let itemsJson = [
+            "items": [item1.json,item2.json]
+        ]
+        let items = [item1.model, item2.model]
+        expect(sut, toCompleteWithError: .success(items), when: {
+            let json = try! JSONSerialization.data(withJSONObject: itemsJson)
+            client.complete(withStatusCode: 200, data: json)
+        })
+    }
     
     // MARK:  - Helpers
     private func makeFactorySUT(url: URL = URL(string: "/url")!) -> (sut: RemoteFeedLoader, client: HTTPClientSpy) {
@@ -84,6 +106,20 @@ final class RemoteFeedLoaderTests: XCTestCase {
         action()
         
         XCTAssertEqual(capturedResults, [result], file:file, line:line)
+    }
+    private func makeItem(id: UUID, description: String? = nil, location: String? = nil, imageURL: URL)->(model: FeedItem, json: [String: Any]) {
+        
+        let items = FeedItem(id: id, description: description, location: location, imageURL: imageURL)
+        
+        let json = [
+            "id": id.uuidString,
+            "description": description,
+            "location": location,
+            "image": imageURL.absoluteString
+        ].reduce(into: [String: Any]()) { (acc, e) in
+            if let value = e.value { acc[e.key] = value}
+        }
+        return (items, json)
     }
     
     private  class HTTPClientSpy: HTTPClient {
