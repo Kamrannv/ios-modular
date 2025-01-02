@@ -12,12 +12,12 @@ public final class RemoteFeedLoader: FeedLoader {
     private let url: URL
     private let client: HTTPClient
     
-    public enum HttpError: Swift.Error {
+    public enum Error: Swift.Error {
         case connectivity
         case invalidData
     }
     
-   public typealias Result = LoadFeedResult<HttpError>
+   public typealias Result = LoadFeedResult
  
     
    public init(client: HTTPClient, url: URL = URL(string: "/url")!) {
@@ -32,7 +32,7 @@ public final class RemoteFeedLoader: FeedLoader {
             case let .success(data, response):
                 completion(FeedItemsMapper.map(data, from: response))
             case .failure:
-                completion(.failure(.connectivity))
+                completion(.failure(Error.connectivity))
             }
            
         }
