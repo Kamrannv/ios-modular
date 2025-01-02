@@ -17,12 +17,13 @@ public struct FeedItem: Equatable {
         self.imageURL = imageURL
     }
 }
-
-extension FeedItem: Decodable {
-    private enum CodingKeys: String, CodingKey {
-        case id
-        case description
-        case location
-        case imageURL = "image"
-    }
-}
+//
+//MARK: Before u did that, nut keep the module abstract and make the changes directly on your RemoteFeedLoader
+//extension FeedItem: Decodable {
+//    private enum CodingKeys: String, CodingKey {
+//        case id
+//        case description
+//        case location
+//        case imageURL = "image"
+//    }
+//}
