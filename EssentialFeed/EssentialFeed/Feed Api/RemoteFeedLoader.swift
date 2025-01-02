@@ -21,14 +21,14 @@ public final class RemoteFeedLoader {
     private let url: URL
     private let client: HTTPClient
     
-    public enum Error: Swift.Error {
+    public enum HttpError: Swift.Error {
         case connectivity
         case invalidData
     }
     
     public enum Result: Equatable {
         case success([FeedItem])
-        case failure(Error)
+        case failure(HttpError)
     }
     
     
