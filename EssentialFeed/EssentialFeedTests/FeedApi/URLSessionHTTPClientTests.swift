@@ -16,7 +16,7 @@ class URLSessionHTTPClient {
     }
     
     func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
-        let url = URL(string:"http://bad-url.com")!
+        //let url = URL(string:"http://bad-url.com")!
         session.dataTask(with: url) {_, _, error in
             if let error = error {
                 completion(.failure(error))
@@ -27,7 +27,23 @@ class URLSessionHTTPClient {
 }
 class URLSessionHTTPClientTests: XCTestCase {
     
-    func test_getFromURL_failsOnRequestError(){
+    func test_getFromURL_performsGETRequestWithURL() {
+        URLProtocolStub.startInterceptingRequest()
+        let url = URL(string: "http://url.com")!
+        let exp = expectation(description: "Wait for completion")
+        
+        URLProtocolStub.observeRequests { request in
+            XCTAssertEqual(request.url, url)
+            XCTAssertEqual(request.httpMethod, "GET")
+            exp.fulfill()
+        }
+    
+        URLSessionHTTPClient().get(from: url) { _ in }
+        wait(for: [exp], timeout: 1.0)
+        URLProtocolStub.stopInterceptingRequest()
+    }
+    
+    func test_getRequest_failsOnRequestError(){
         URLProtocolStub.startInterceptingRequest()
         let url = URL(string: "http://url.com")!
         let error = NSError(domain: "any error", code: 1, userInfo: nil)
@@ -53,7 +69,7 @@ class URLSessionHTTPClientTests: XCTestCase {
     //MARK: Helpers
     private class URLProtocolStub: URLProtocol{
         private static var stub: Stub?
-        
+        private static var requestObserver: ((URLRequest)->Void)?
         private struct Stub {
             let data: Data?
             let response: URLResponse?
@@ -67,9 +83,15 @@ class URLSessionHTTPClientTests: XCTestCase {
         static func startInterceptingRequest(){
             URLProtocol.registerClass(URLProtocolStub.self)
         }
+        
         static func stopInterceptingRequest(){
             URLProtocol.unregisterClass(URLProtocolStub.self)
             stub = nil
+            requestObserver = nil
+        }
+        
+        static func observeRequests(observer: @escaping (URLRequest)->Void){
+            requestObserver = observer
         }
         
         override class func canInit(with request: URLRequest) -> Bool {
@@ -77,6 +99,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         }
         
         override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+            requestObserver?(request)
             return request
         }
         
