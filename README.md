@@ -86,13 +86,14 @@
 3. System creates feed items from cached data.
 4. System delivers feed items.
 
+
 # **No cache course (sad path):**
 
 1. System delivers no feed items.
 
 ---
 
-# **Save Feed Items Use Case**
+# **Cache Feed Use Case**
 
 # **Data (Input):**
 
@@ -101,12 +102,18 @@
 # **Primary course (happy path):**
 
 1. Execute "Save Feed Items" command with above data.
+2. System deletes the old cache data
 2. System encodes feed items.
 3. System timestamps the new cache.
-4. System replaces the cache with new data.
+4. System saves the new cache data.
 5. System delivers a success message.
 
 ---
+#### Deleting error course (sad path):
+1. System delivers error.
+
+#### Saving error course (sad path):
+1. System delivers error.
 
 Furthermore, in order to communicate the workflow of the feature to everyone, we can translate the requirements to the following flowchart.
 
