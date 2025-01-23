@@ -59,7 +59,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
             let invalidJSON = Data("invalid".utf8)
             client.complete(withStatusCode: 200, data: invalidJSON)
         })
-       
+        
     }
     
     func test_load_deliversNoItemsWith200HTTPResponse() {
@@ -83,7 +83,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
             description: "desc",
             location: "location",
             imageURL: URL(string: "http://another-url.com")!
-
+            
         )
         
         let items = [item1.model, item2.model]
@@ -116,7 +116,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
         trackForMemoryLeaks(client, file:file, line:line)
         return (sut, client)
     }
- 
+    
     
     private func expect(_ sut: RemoteFeedLoader, toCompleteWith expectedResult: RemoteFeedLoader.Result, when action: ()->Void, file: StaticString = #filePath, line: UInt = #line){
         
@@ -160,7 +160,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
         return .failure(error)
     }
     private  class HTTPClientSpy: HTTPClient {
-
+        
         private var messages = [(url: URL, completion: (HTTPClientResult)->Void)]()
         var requestedUrls: [URL] {
             messages.map { $0.url }

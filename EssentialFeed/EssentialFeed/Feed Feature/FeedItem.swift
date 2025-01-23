@@ -18,7 +18,7 @@ public struct FeedItem: Equatable {
     }
 }
 //
-//MARK: Before u did that, nut keep the module abstract and make the changes directly on your RemoteFeedLoader
+//MARK: Before u did that, but keep the module abstract and make the changes directly on your RemoteFeedLoader
 //extension FeedItem: Decodable {
 //    private enum CodingKeys: String, CodingKey {
 //        case id
