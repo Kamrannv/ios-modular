@@ -77,14 +77,15 @@
 
 # **Data (Input):**
 
-- Max age
+### Load Feed From Cache Use Case
 
 # **Primary course (happy path):**
 
-1. Execute "Retrieve Feed Items" command with above data.
+1. Execute "Load Feed Items" command with above data.
 2. System fetches feed data from cache.
-3. System creates feed items from cached data.
-4. System delivers feed items.
+3. System validates cache is less than seven days old.
+4. System creates feed items from cached data.
+5. System delivers feed items.
 
 
 # **No cache course (sad path):**
@@ -109,6 +110,7 @@
 5. System delivers a success message.
 
 ---
+
 #### Deleting error course (sad path):
 1. System delivers error.
 
