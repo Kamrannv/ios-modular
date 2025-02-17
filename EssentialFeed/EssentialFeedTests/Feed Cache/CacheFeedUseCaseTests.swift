@@ -17,8 +17,9 @@ class LocalFeedLoader {
         self.store = store
         self.currentDate = currentDate
     }
-    func save(_ items: [FeedItem]) {
+    func save(_ items: [FeedItem], completion: @escaping (Error?) -> Void) {
         store.deleteCachedFeed {[unowned self] error in
+            completion(error)
             if error == nil {
                 self.store.insert(items, timeStamp: self.currentDate())
             }
@@ -71,7 +72,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
     func test_saveRequestsDeletionOfCache() {
         let (sut, store) = makeSUT()
         let items = [uniqueItem(), uniqueItem()]
-        sut.save(items)
+        sut.save(items) { _ in }
         
         XCTAssertEqual(store.receivedMessages, [.deletedCachedFeed])
     }
@@ -80,7 +81,7 @@ final class CacheFeedUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT()
         let items = [uniqueItem(), uniqueItem()]
         let deletionError = anyNSError()
-        sut.save(items)
+        sut.save(items) { _ in }
         store.completeDeletion(with: deletionError)
         XCTAssertEqual(store.receivedMessages, [.deletedCachedFeed])
     }
@@ -91,10 +92,27 @@ final class CacheFeedUseCaseTests: XCTestCase {
         let timeStamp = Date()
         let (sut, store) = makeSUT(currentDate: { timeStamp })
         let items = [uniqueItem(), uniqueItem()]
-        sut.save(items)
+        sut.save(items) { _ in }
         store.completeDeletionSuccessfully()
         XCTAssertEqual(store.receivedMessages, [.deletedCachedFeed, .insert(items, timeStamp)])
     }
+    
+    
+    func test_save_failsOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let items = [uniqueItem(), uniqueItem()]
+        let deletionError = anyNSError()
+        let exp = expectation(description: "Wait for completion")
+        var receivedError: Error?
+        sut.save(items) { err in
+            receivedError = err
+            exp.fulfill()
+        }
+        store.completeDeletion(with: deletionError)
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertEqual(store.receivedMessages, [.deletedCachedFeed])
+    }
+    
     //MARK: Helpers
     private func makeSUT(currentDate: @escaping () -> Date = Date.init,  file: StaticString = #file, line: UInt = #line) -> (sut: LocalFeedLoader, store: FeedStore) {
         let store = FeedStore()
