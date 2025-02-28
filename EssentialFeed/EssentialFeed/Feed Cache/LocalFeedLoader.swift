@@ -6,8 +6,6 @@
 //
 import Foundation
 
-
-
 public final class LocalFeedLoader {
     private let store: FeedStore
     private let currentDate: () -> Date
@@ -27,6 +25,10 @@ public final class LocalFeedLoader {
                 cache(feed, with: completion)
             }
         }
+    }
+    
+    public func load(completion: @escaping (Error?) -> Void) {
+        store.retrieve(completion: completion)
     }
     
     private func cache(_ feed: [FeedImage], with completion: @escaping (SaveResult) -> Void) {
