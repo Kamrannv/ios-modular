@@ -47,80 +47,110 @@
 ***Then** the app should display an error message*
 
 ---
-
-
-# **Load Feed Use Case**
-
-# **Data (Input):**
-
+## Use Cases
+### Load Feed From Remote Use Case
+#### Data:
 - URL
+#### Primary course (happy path):
 
-# **Primary course (happy path):**
-
-1. Execute "Load Feed Images" command with above data.
+1. Execute "Load Image Feed" command with above data.
 2. System downloads data from the URL.
 3. System validates downloaded data.
-4. System creates feed images from valid data.
-5. System delivers feed images.
+4. System creates image feed from valid data.
+5. System delivers image feed.
 
-# **Invalid data – error course (sad path):**
+#### Invalid data – error course (sad path):
+1. System delivers invalid data error.
 
-1. System delivers error.
-
-# **No connectivity – error course (sad path):**
-
-1. System delivers error.
-
----
-
-# **Load Feed Fallback (Cache) Use Case**
-
-# **Data (Input):**
+#### No connectivity – error course (sad path):
+1. System delivers connectivity error.
 
 ### Load Feed From Cache Use Case
 
-# **Primary course (happy path):**
-
-1. Execute "Load Feed Items" command with above data.
-2. System fetches feed data from cache.
+#### Primary course:
+1. Execute "Load Image Feed" command with above data.
+2. System retrieves feed data from cache.
 3. System validates cache is less than seven days old.
-4. System creates feed items from cached data.
-5. System delivers feed items.
+4. System creates image feed from cached data.
+5. System delivers image feed.
+
+#### Retrieval error course (sad path):
+1. System delivers error.
+
+#### Expired cache course (sad path): 
+1. System delivers no feed images.
+#### Empty cache course (sad path): 
+1. System delivers no feed images.
 
 
-# **No cache course (sad path):**
+### Validate Feed Cache Use Case
 
-1. System delivers no feed items.
+#### Primary course:
+1. Execute "Validate Cache" command with above data.
+2. System retrieves feed data from cache.
+3. System validates cache is less than seven days old.
 
----
+#### Retrieval error course (sad path):
+1. System deletes cache.
 
-# **Cache Feed Use Case**
+#### Expired cache course (sad path): 
+1. System deletes cache.
 
-# **Data (Input):**
 
-- Feed items
+### Cache Feed Use Case
 
-# **Primary course (happy path):**
-
-1. Execute "Save Feed Items" command with above data.
-2. System deletes the old cache data
-2. System encodes feed items.
-3. System timestamps the new cache.
-4. System saves the new cache data.
-5. System delivers a success message.
-
----
-
+#### Data:
+- Image Feed
+#### Primary course (happy path):
+1. Execute "Save Image Feed" command with above data.
+2. System deletes old cache data.
+3. System encodes image feed.
+4. System timestamps the new cache.
+5. System saves new cache data.
+6. System delivers success message.
 #### Deleting error course (sad path):
 1. System delivers error.
-
 #### Saving error course (sad path):
 1. System delivers error.
-
-Furthermore, in order to communicate the workflow of the feature to everyone, we can translate the requirements to the following flowchart.
-
-https://cdn.fs.teachablecdn.com/ADNupMnWyR7kCWRvm76Laz/https://www.filepicker.io/api/file/FFZiot29S3ORyWWNNiRN
-
-Which leads us back to the modular architecture proposed in a previous lecture, with two load feed *strategies*: Online (Remote) and Offline (Local).
-
-https://cdn.fs.teachablecdn.com/ADNupMnWyR7kCWRvm76Laz/https://www.filepicker.io/api/file/oYr8WUrARqCgtFiSHeZg
+## Flowchart
+![Feed Loading Feature](feed_flowchart.png)
+## Architecture
+![Feed Loading Feature](feed_architecture.png)
+## Model Specs
+### Feed Image
+| Property      | Type                |
+|---------------|---------------------|
+| `id`          | `UUID`              |
+| `description` | `String` (optional) |
+| `location`    | `String` (optional) |
+| `url`            | `URL`               |
+### Payload contract
+```
+GET *url* (TBD)
+200 RESPONSE
+{
+    "items": [
+        {
+            "id": "a UUID",
+            "description": "a description",
+            "location": "a location",
+            "image": "https://a-image.url",
+        },
+        {
+            "id": "another UUID",
+            "description": "another description",
+            "image": "https://another-image.url"
+        },
+        {
+            "id": "even another UUID",
+            "location": "even another location",
+            "image": "https://even-another-image.url"
+        },
+        {
+            "id": "yet another UUID",
+            "image": "https://yet-another-image.url"
+        }
+        ...
+    ]
+}
+```
