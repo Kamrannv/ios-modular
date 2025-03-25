@@ -52,7 +52,6 @@ public final class LocalFeedLoader {
         }
     }
     public func validateCache() {
-            store.retrieve { _ in }
             store.retrieve { [unowned self] result in
                     switch result {
                     case .failure:
