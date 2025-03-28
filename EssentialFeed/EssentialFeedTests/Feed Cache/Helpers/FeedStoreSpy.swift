@@ -54,6 +54,6 @@ class FeedStoreSpy: FeedStore {
     }
 
     func completeRetrieval(with feed: [LocalFeedImage], timestamp: Date, at index: Int = 0) {
-        retreivalCompletions[index](.success(.some(.init(timestamp: timestamp, feed: feed))))
+        retreivalCompletions[index](.success(.some(CachedFeed(timestamp: timestamp, feed: feed))))
         }
 }
