@@ -53,9 +53,4 @@ extension ManagedFeedImage {
         return LocalFeedImage(id: id, description: imageDescription, location: location, url: url)
     }
     
-//    override func prepareForDeletion() {
-//        super.prepareForDeletion()
-//        
-//        managedObjectContext?.userInfo[url] = data
-//    }
 }

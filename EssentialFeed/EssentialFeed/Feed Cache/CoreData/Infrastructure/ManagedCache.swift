@@ -38,3 +38,5 @@ extension ManagedCache {
         return feed.compactMap { ($0 as? ManagedFeedImage)?.local }
     }
 }
+
+
