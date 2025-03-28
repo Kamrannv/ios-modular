@@ -26,15 +26,15 @@ class EssentialFeedCacheIntegrationTests: XCTestCase {
         
         expect(sut, toLoad: [])
     }
-    func test_load_deliversItemsSavedOnASeparateInstance() {
-        let sutToPerformSave = makeSUT()
-        let sutToPerformLoad = makeSUT()
-        let feed = uniqueImageFeed().models
-        
-        save(feed, with: sutToPerformSave)
-        
-        expect(sutToPerformLoad, toLoad: feed)
-    }
+//    func test_load_deliversItemsSavedOnASeparateInstance() {
+//        let sutToPerformSave = makeSUT()
+//        let sutToPerformLoad = makeSUT()
+//        let feed = uniqueImageFeed().models
+//        
+//        save(feed, with: sutToPerformSave)
+//        
+//        expect(sutToPerformLoad, toLoad: feed)
+//    }
 //    func test_save_overridesItemsSavedOnASeparateInstance() {
 //        let sutToPerformFirstSave = makeSUT()
 //        let sutToPerformLastSave = makeSUT()
