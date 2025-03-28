@@ -27,13 +27,13 @@ final class EssentialFeedAPIEndToEndTests: XCTestCase {
     }
     
     //MARK: Helpers
-    private func getFeedResult(file: StaticString = #filePath, line: UInt = #line)->LoadFeedResult?{
+    private func getFeedResult(file: StaticString = #filePath, line: UInt = #line)->FeedLoader.Result?{
         let serverURl = URL(string: "https://essentialdeveloper.com/feed-case-study/test-api/feed")!
         let client = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
         let loader = RemoteFeedLoader(client: client, url: serverURl)
         trackForMemoryLeaks(client, file:file, line:line)
         trackForMemoryLeaks(loader, file:file, line:line)
-        var receivedResult: LoadFeedResult?
+        var receivedResult: FeedLoader.Result?
         let exp = expectation(description: "Wait for load completion")
         loader.load { res in
             receivedResult = res
@@ -43,8 +43,8 @@ final class EssentialFeedAPIEndToEndTests: XCTestCase {
         wait(for: [exp], timeout: 5.0)
         return receivedResult
     }
-    private func expectedItems(at index:Int)->FeedItem {
-        return FeedItem(id: id(at: index), description: description(at: index), location: location(at:index), imageURL: imageURL(at: index))
+    private func expectedItems(at index:Int)->FeedImage {
+        return FeedImage(id: id(at: index), description: description(at: index), location: location(at:index), imageURL: imageURL(at: index))
     }
     private func id(at index: Int) -> UUID {
         return UUID(uuidString: [
