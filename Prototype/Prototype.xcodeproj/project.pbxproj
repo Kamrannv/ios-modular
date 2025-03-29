@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A87813472D98297600248775 /* Exceptions for "Prototype" folder in "Prototype" target */ = {
+		A878135B2D98668000248775 /* Exceptions for "Prototype" folder in "Prototype" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		A87813372D98297500248775 /* Prototype */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				A87813472D98297600248775 /* Exceptions for "Prototype" folder in "Prototype" target */,
+				A878135B2D98668000248775 /* Exceptions for "Prototype" folder in "Prototype" target */,
 			);
 			path = Prototype;
 			sourceTree = "<group>";
