@@ -63,6 +63,9 @@
                                                                 <fontDescription key="titleFontDescription" type="system" pointSize="55"/>
                                                                 <color key="baseForegroundColor" systemColor="systemBackgroundColor"/>
                                                             </buttonConfiguration>
+                                                            <connections>
+                                                                <action selector="retryButtonTapped" destination="Ti3-k5-Qeb" eventType="touchUpInside" id="1we-5c-Ktp"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.89019607840000003" green="0.89019607840000003" blue="0.89019607840000003" alpha="1" colorSpace="calibratedRGB"/>
@@ -103,6 +106,14 @@
                                         <constraint firstAttribute="trailingMargin" secondItem="gad-6o-iIQ" secondAttribute="trailing" id="Tm2-5g-Wdu"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="descriptionLabel" destination="yIC-Fp-8xO" id="N8D-yj-QfN"/>
+                                    <outlet property="feedImageContainer" destination="cyA-e6-nJ7" id="Usf-Na-Rs1"/>
+                                    <outlet property="feedImageRetryButton" destination="PJH-iL-l58" id="th2-FN-VwI"/>
+                                    <outlet property="feedImageView" destination="GJX-Fu-2mL" id="zfe-RC-CjB"/>
+                                    <outlet property="locationContainer" destination="hn0-vR-EKe" id="sFI-nE-Nfp"/>
+                                    <outlet property="locationLabel" destination="HfU-TH-HPg" id="ywe-CH-Zgr"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
