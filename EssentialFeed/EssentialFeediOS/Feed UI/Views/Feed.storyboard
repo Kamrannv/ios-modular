@@ -108,6 +108,7 @@
                         <connections>
                             <outlet property="dataSource" destination="pGa-nI-Wfy" id="qfd-e8-aYT"/>
                             <outlet property="delegate" destination="pGa-nI-Wfy" id="8jd-mk-KNG"/>
+                            <outlet property="prefetchDataSource" destination="pGa-nI-Wfy" id="DZz-fw-Glj"/>
                         </connections>
                     </tableView>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="pgv-Ho-fnp">
