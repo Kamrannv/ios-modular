@@ -12,18 +12,13 @@ import EssentialFeed
 final class FeedViewControllerTests: XCTestCase {
     
     func test_feedView_hasTitle() {
-            let (sut, _) = makeSUT()
-
-            sut.loadViewIfNeeded()
-
-        let bundle = Bundle(for: FeedViewController.self)
-                let localizedKey = "FEED_VIEW_TITLE"
-                let localizedTitle = bundle.localizedString(forKey: localizedKey, value: nil, table: "Feed")
-
-                XCTAssertNotEqual(localizedKey, localizedTitle, "Missing localized string for key: \(localizedKey)")
-                XCTAssertEqual(sut.title, localizedTitle)
-        }
-
+        let (sut, _) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        
+        XCTAssertEqual(sut.title, localized("FEED_VIEW_TITLE"))
+    }
+    
     
     func test_loadFeedActions_requestFeedFromLoader() throws {
         let (sut, loader) = makeSUT()
@@ -240,10 +235,10 @@ final class FeedViewControllerTests: XCTestCase {
         let (sut, loader) = makeSUT()
         sut.loadViewIfNeeded()
         loader.completeFeedLoading(with: [makeImage()])
-
+        
         let view = sut.simulateFeedImageViewNotVisible(at: 0)
         loader.completeImageLoading(with: anyImageData())
-
+        
         XCTAssertNil(view?.renderedImage, "Expected no rendered image when an image load finishes after the view is not visible anymore")
     }
     
@@ -255,18 +250,18 @@ final class FeedViewControllerTests: XCTestCase {
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, loader)
     }
-  
+    
     private func anyImageData() -> Data {
-            return UIImage.make(withColor: .red).pngData()!
-        }
+        return UIImage.make(withColor: .red).pngData()!
+    }
     
     private func makeImage(description: String? = nil, location: String? = nil, url: URL = URL(string: "http://any-url.com")!) -> FeedImage {
         return FeedImage(id: UUID(), description: description, location: location, imageURL: url)
     }
     
-     
+    
 }
-  
 
- 
- 
+
+
+
