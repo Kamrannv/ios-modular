@@ -20,6 +20,7 @@ public final class FeedUIComposer {
             fatalError("Could not instantiate FeedViewController from Feed.storyboard")
         }
         feedController.delegate = presentationAdapter
+        feedController.title = FeedPresenter.title
         
         presentationAdapter.presenter = FeedPresenter(
             feedView: FeedViewAdapter(controller: feedController, imageLoader: imageLoader),
